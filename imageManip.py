@@ -86,7 +86,7 @@ def crop_shape(img):
 	return crop_leftRight(crop_topBottom(img))
 
 def thicken(img):
-	blur = cv2.GaussianBlur(img,(3,3),0)
+	blur = cv2.GaussianBlur(img,(5,5),0)
 	val, img = cv2.threshold(blur, 1, 255, cv2.THRESH_BINARY)
 	return img
 
@@ -99,7 +99,7 @@ def print_info(img, text=""):
 
 def list_to_files(images, name="result"):
 	for i in range(len(images)):
-		cv2.imwrite(name+str(i)+".jpg",images[i])
+		cv2.imwrite(name+str(i)+".jpg",np.invert(images[i]))
 
 img = cv2.imread("image.jpg", 0)
 blurred = cv2.GaussianBlur(img,(7,7),0)
@@ -118,29 +118,46 @@ while True:
 	tempImg = crop_shape(img[:topInner,:])
 	img = crop_shape(img[topInner:,:])
 	tempx, tempy = tempImg.shape
-	if tempx > 10 and tempy > 10:
-		horizontalImages.append(tempImg)
-	if img.shape[0] <= 10 or tempshape == img.shape:
+	if img.shape[0] <= 2 or tempshape == img.shape:
 		break
+	if tempx > 2 and tempy > 2:
+		horizontalImages.append(tempImg)
 	tempshape = img.shape
 
-list_to_files(horizontalImages, "horizontalImage")
+#list_to_files(horizontalImages, "horizontalImage")
 
 images = []
-tempshape = (0,0)
 for image in horizontalImages:
+	tempshape = (0,0)
 	tempx, tempy = tempImg.shape
-	while tempx > 10 and tempy > 10:
+	while tempx > 2 and tempy > 2:
 		leftInner = findLeftInnerBorder(image)
-		image = crop_shape(image[:,leftInner:])
 		tempImg = crop_shape(image[:,:leftInner])
+		image = crop_shape(image[:,leftInner:])
 		tempx, tempy = tempImg.shape
-		if tempx > 10 and tempy > 10:
+		if tempx > 2 and tempy > 2:
 			images.append(tempImg)
-		if image.shape[0] <= 10 or tempshape == image.shape:
+		if image.shape[1] <= 2 or tempshape == image.shape:
 			break
 		tempshape = image.shape
 
 list_to_files(images, "finalImage")
 
-#"""
+
+"""
+	#while True:
+	leftInner = findLeftInnerBorder(image)
+	tempImg = crop_shape(image[:,:leftInner])
+	image = crop_shape(image[:,leftInner:])
+
+	cv2.imwrite("try1.jpg",tempImg)
+	cv2.imwrite("try2.jpg",image)
+
+	leftInner = findLeftInnerBorder(image)
+	tempImg = crop_shape(image[:,:leftInner])
+	image = crop_shape(image[:,leftInner:])
+
+	cv2.imwrite("try3.jpg",tempImg)
+	cv2.imwrite("try4.jpg",image)
+
+	#"""
