@@ -1,3 +1,2 @@
-cp label_image.py /tf_files
-cd /tf_files
-python label_image.py /img/guess.jpg
+#!/bin/bash
+/usr/bin/docker run -v ~/Desktop/Quick-Math-master/images/:/tf_files -v '/home/deeplearning/Desktop/t.jpeg':/img/guess.jpg xblaster/tensor-guess /bin/sh -c "/usr/bin/python /tf_files/label_image.py /img/guess.jpg"
